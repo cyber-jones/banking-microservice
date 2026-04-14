@@ -140,4 +140,17 @@ public class AccountController {
         accountService.closeAccount(id);
         return ResponseEntity.noContent().build();
     }
+
+    /**
+     * PUT /api/v1/accounts/{id}/balance
+     * Update account balance.
+     */
+    @PatchMapping("/{id}/balance")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Update account details")
+    public ResponseEntity<AccountDto.Response> updateAccountBalance(
+            @PathVariable Long id,
+            @Valid @RequestBody AccountDto.BalanceUpdateRequest request) {
+        return ResponseEntity.ok(accountService.updateAccountBalance(id, request));
+    }
 }

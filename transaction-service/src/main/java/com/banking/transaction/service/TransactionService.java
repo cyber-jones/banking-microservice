@@ -52,7 +52,7 @@ public class TransactionService {
         }
 
         // 2. Calculate new balance
-        BigDecimal newBalance = account.getBalance().add(request.getAmount());
+        BigDecimal newBalance = account.getBalance().subtract(request.getAmount());
 
         // 3. Create transaction record
         Transaction transaction = Transaction.builder()

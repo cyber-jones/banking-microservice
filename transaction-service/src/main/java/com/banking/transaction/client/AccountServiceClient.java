@@ -2,10 +2,7 @@ package com.banking.transaction.client;
 
 import com.banking.transaction.dto.AccountClientDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * AccountServiceClient — FeignClient for calling Account Service.
@@ -17,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  *
  * With Feign + Eureka, this is transparent:
  *  - Eureka resolves "account-service" to the actual host:port
- *  - Feign handles the HTTP call, serialisation, and errors
+ *  - Feign handles the HTTP call, serialization, and errors
  *  - Spring Cloud LoadBalancer distributes across multiple instances
  *
  * IMPORTANT: In a real system, updating balance via REST call is risky
@@ -30,7 +27,7 @@ public interface AccountServiceClient {
     @GetMapping("/number/{accountNumber}")
     AccountClientDto.AccountResponse getAccountByNumber(@PathVariable String accountNumber);
 
-    @PutMapping("/{id}/balance")
+    @PatchMapping("/{id}/balance")
     AccountClientDto.AccountResponse updateBalance(
             @PathVariable Long id,
             @RequestBody AccountClientDto.BalanceUpdateRequest request);

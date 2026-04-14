@@ -156,6 +156,23 @@ public class AccountService {
     }
 
     /**
+     * Update account balance.
+     * TEACHING POINT — @Transactional ensures the update is atomic.
+     * If anything throws after findById, the entire transaction rolls back.
+     */
+    @Transactional
+    public AccountDto.Response updateAccountBalance(Long id, AccountDto.BalanceUpdateRequest request) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found with id: " + id));
+
+        if (request.getNewBalance()  != null)
+            account.setBalance(request.getNewBalance());
+
+        Account updated = accountRepository.save(account);
+        return mapToResponse(updated);
+    }
+
+    /**
      * TEACHING POINT — Private helper to map Entity → Response DTO.
      * Always keep this mapping in the Service layer, not the Controller.
      */

@@ -12,13 +12,13 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  *
  * @SpringBootApplication  combines three annotations:
  *   - @Configuration      marks this class as a source of bean definitions
- *   - @EnableAutoConfiguration  tells Spring Boot to auto-configure based on classpath
+ *   - @EnableAutoConfiguration  tells Spring Boot to autoconfigure based on classpath
  *   - @ComponentScan      scans this package and sub-packages for Spring components
  *
  * @EnableDiscoveryClient  registers this service with Eureka on startup
  * @EnableFeignClients     enables declarative HTTP clients (FeignClient)
  *
- * The app auto-configures:
+ * The app autoconfigures:
  *   - Embedded Tomcat web server
  *   - JPA/Hibernate with H2 database
  *   - Spring Security filter chain

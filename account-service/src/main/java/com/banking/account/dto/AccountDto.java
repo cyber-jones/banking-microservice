@@ -133,4 +133,17 @@ public class AccountDto {
         @Email
         private String email;
     }
+
+    /**
+     * Update Balance Request DTO — for updating user account balance.
+     */
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BalanceUpdateRequest {
+
+        @NotNull(message = "Initial deposit is required")
+        @DecimalMin(value = "0.01", message = "Initial deposit must be at least 0.01")
+        private BigDecimal newBalance;
+    }
 }
