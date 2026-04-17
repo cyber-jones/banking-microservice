@@ -30,7 +30,7 @@ spring:
     # validate    : only validate, never modify (good for production)
     # none        : do nothing (use Flyway/Liquibase in production)
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true  # Prints SQL queries to console — great for learning!
     properties:
       hibernate:

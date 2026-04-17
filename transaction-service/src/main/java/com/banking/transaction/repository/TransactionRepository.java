@@ -23,15 +23,21 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     // TEACHING POINT — Aggregation with @Query (JPQL)
     @Query("SELECT SUM(t.amount) FROM Transaction t " +
-           "WHERE t.accountNumber = :acct AND t.type = 'DEPOSIT' AND t.status = 'COMPLETED'")
+            "WHERE t.accountNumber = :acct AND t.type = 'DEPOSIT' AND t.status = 'COMPLETED'")
     BigDecimal sumDeposits(@Param("acct") String accountNumber);
 
     @Query("SELECT SUM(t.amount) FROM Transaction t " +
-           "WHERE t.accountNumber = :acct AND t.type = 'WITHDRAWAL' AND t.status = 'COMPLETED'")
+            "WHERE t.accountNumber = :acct AND t.type = 'WITHDRAWAL' AND t.status = 'COMPLETED'")
     BigDecimal sumWithdrawals(@Param("acct") String accountNumber);
 
     @Query("SELECT COUNT(t) FROM Transaction t WHERE t.accountNumber = :acct")
     long countByAccount(@Param("acct") String accountNumber);
 
     List<Transaction> findByCreatedAtBetween(LocalDateTime from, LocalDateTime to);
+
+    @Query("SELECT t FROM Transaction t " +
+            "WHERE t.accountNumber = :acct " +
+            "AND t.created_at >= :fromDate ORDER BY t.created_at ASC")
+    List<Transaction> getRecentTransactions(@Param("acct") String accountNumber,
+                                             @Param("fromDate") LocalDateTime fromDate);
 }

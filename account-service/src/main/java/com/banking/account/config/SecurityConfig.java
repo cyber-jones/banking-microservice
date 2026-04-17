@@ -66,6 +66,7 @@ public class SecurityConfig {
                         // Public endpoints (no token needed)
                         .requestMatchers(
                                 "/api/v1/auth/**",           // login & register
+                                "/api/v1/health/**",           // health
                                 "/h2-console/**",            // H2 browser console
                                 "/swagger-ui/**",            // Swagger UI
                                 "/swagger-ui.html",

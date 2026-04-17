@@ -20,15 +20,15 @@ import java.util.Map;
  * KafkaConsumerConfig — configures consumer factories for each event type.
  *
  * TEACHING POINT — Why separate factories?
- * Each @KafkaListener deserialises a DIFFERENT Java class:
+ * Each @KafkaListener deserializes a DIFFERENT Java class:
  *   account-events     → Events.AccountEvent
  *   transaction-events → Events.TransactionEvent
  *
  * We create a separate ConsumerFactory + ListenerContainerFactory for each,
- * so Jackson knows which class to deserialise into.
+ * so Jackson knows which class to deserialize into.
  *
  * TEACHING POINT — ErrorHandlingDeserializer:
- * Wraps the real deserialiser. If a message can't be deserialised
+ * Wraps the real deserializer. If a message can't be deserialized
  * (malformed JSON, missing fields), it sends the error to the error handler
  * instead of crashing the entire consumer. Prevents "poison pill" messages
  * from stopping the consumer.

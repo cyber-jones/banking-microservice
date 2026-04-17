@@ -62,7 +62,7 @@ public class Notification {
         ACCOUNT_CREATED, ACCOUNT_CLOSED,
         DEPOSIT_RECEIVED, WITHDRAWAL_PROCESSED,
         TRANSFER_SENT, TRANSFER_RECEIVED,
-        LOW_BALANCE_ALERT
+        LOW_BALANCE_ALERT, ACCOUNT_FROZEN
     }
 
     public enum NotificationStatus {

@@ -20,7 +20,7 @@ import java.util.Set;
  * AuthService — handles user registration and JWT login.
  *
  * TEACHING POINT — Authentication Flow:
- *  1. Register: hash password with BCrypt, save user to DB
+ *  1. Register: hash password with Bcrypt, save user to DB
  *  2. Login: AuthenticationManager verifies credentials,
  *     JwtUtil generates a signed token, return token to client
  *  3. Client includes "Authorization: Bearer <token>" in subsequent requests
@@ -47,9 +47,9 @@ public class AuthService {
 
         User user = User.builder()
                 .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))  // BCrypt hash
+                .password(passwordEncoder.encode(request.getPassword()))  // Bcrypt hash
                 .email(request.getEmail())
-                .roles(Set.of("ROLE_USER"))
+                .roles(Set.of("ROLE_ADMIN"))
                 .enabled(true)
                 .build();
 

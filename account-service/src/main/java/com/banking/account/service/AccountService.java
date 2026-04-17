@@ -156,9 +156,7 @@ public class AccountService {
     }
 
     /**
-     * Update account balance.
-     * TEACHING POINT — @Transactional ensures the update is atomic.
-     * If anything throws after findById, the entire transaction rolls back.
+     * Update account Balance
      */
     @Transactional
     public AccountDto.Response updateAccountBalance(Long id, AccountDto.BalanceUpdateRequest request) {
@@ -170,6 +168,28 @@ public class AccountService {
 
         Account updated = accountRepository.save(account);
         return mapToResponse(updated);
+    }
+
+
+    /**
+     * freeze/deactivate an account.
+     */
+    @Transactional
+    public void freezeAccount(Long id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found with id: " + id));
+
+        account.setStatus(Account.AccountStatus.FROZEN);
+        accountRepository.save(account);
+
+        AccountEvent event = AccountEvent.builder()
+                .eventType("ACCOUNT_FROZEN")
+                .accountId(account.getId())
+                .accountNumber(account.getAccountNumber())
+                .email(account.getEmail())
+                .build();
+        kafkaTemplate.send(ACCOUNT_TOPIC, account.getAccountNumber(), event);
+        log.info("Account frozen: {}", account.getAccountNumber());
     }
 
     /**

@@ -39,7 +39,7 @@ public class TransactionDto {
         @NotBlank
         private String toAccountNumber;
 
-        @NotNull @DecimalMin(value = "0.01")
+        @NotNull @DecimalMin(value = "10.00", message = "Minimum transfer amount is $10.00")
         private BigDecimal amount;
 
         private String description;

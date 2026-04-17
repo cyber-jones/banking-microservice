@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
  *   analytics-group    → processes SAME events for reporting (different service)
  *   Both groups get every message — they're independent subscribers.
  *
- * @Payload — injects the deserialised message body
+ * @Payload — injects the deserialized message body
  * @Header  — injects Kafka metadata (topic, partition, offset, key)
  *
  * TEACHING POINT — Message Ordering:
@@ -50,7 +50,7 @@ public class NotificationKafkaConsumer {
     private final NotificationService notificationService;
 
     /**
-     * Consumes account lifecycle events (created, closed).
+     * Consumes account lifecycle events (created, closed, frozen).
      */
     @KafkaListener(
             topics = "account-events",
@@ -70,6 +70,7 @@ public class NotificationKafkaConsumer {
             switch (event.getEventType()) {
                 case "ACCOUNT_CREATED" -> notificationService.processAccountCreated(event);
                 case "ACCOUNT_CLOSED"  -> notificationService.processAccountClosed(event);
+                case "ACCOUNT_FROZEN"  -> notificationService.processAccountEvent(event);
                 default -> log.warn("Unhandled account event type: {}", event.getEventType());
             }
         } catch (Exception e) {

@@ -80,6 +80,29 @@ public class NotificationService {
         simulateSendEmail(event.getEmail(), notification.getSubject(), message);
     }
 
+
+    @Transactional
+    public void processAccountEvent(Events.AccountEvent event) {
+        log.info("Processing ACCOUNT_FROZEN event for: {}", event.getAccountNumber());
+
+        String message = String.format(
+                "Your account %s has been frozen. Thank you for banking with us.",
+                event.getAccountNumber());
+
+        Notification notification = Notification.builder()
+                .recipientEmail(event.getEmail())
+                .subject("Account Freeze Confirmation")
+                .message(message)
+                .type(Notification.NotificationType.ACCOUNT_FROZEN)
+                .status(Notification.NotificationStatus.SENT)
+                .accountNumber(event.getAccountNumber())
+                .eventType(event.getEventType())
+                .build();
+
+        notificationRepository.save(notification);
+        simulateSendEmail(event.getEmail(), notification.getSubject(), message);
+    }
+
     // ─────────────────────────────────────────────────────────────
     // Transaction Event Handlers
     // ─────────────────────────────────────────────────────────────

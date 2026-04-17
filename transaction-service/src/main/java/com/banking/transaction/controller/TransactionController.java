@@ -68,4 +68,12 @@ public class TransactionController {
             @PathVariable String accountNumber) {
         return ResponseEntity.ok(transactionService.getAccountSummary(accountNumber));
     }
+
+    @GetMapping("/account/{accountNumber}/recent")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get recent transactions for an account")
+    public ResponseEntity<List<TransactionDto.Response>> getRecentTransactions(
+            @PathVariable String accountNumber) {
+        return ResponseEntity.ok(transactionService.getRecentTransactions(accountNumber));
+    }
 }

@@ -35,7 +35,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
-                .password(user.getPassword())  // already BCrypt-hashed in DB
+                .password(user.getPassword())  // already Bcrypt-hashed in DB
                 .authorities(
                         user.getRoles().stream()
                                 .map(SimpleGrantedAuthority::new)

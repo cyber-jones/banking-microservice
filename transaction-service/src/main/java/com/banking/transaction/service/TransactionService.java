@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -52,7 +53,7 @@ public class TransactionService {
         }
 
         // 2. Calculate new balance
-        BigDecimal newBalance = account.getBalance().subtract(request.getAmount());
+        BigDecimal newBalance = account.getBalance().add(request.getAmount());
 
         // 3. Create transaction record
         Transaction transaction = Transaction.builder()
@@ -167,6 +168,17 @@ public class TransactionService {
                 .transactionCount(count)
                 .currentBalance(account.getBalance())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<TransactionDto.Response> getRecentTransactions(String accountNumber) {
+        AccountClientDto.AccountResponse account =
+                accountServiceClient.getAccountByNumber(accountNumber);
+
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+        return transactionRepository
+                .getRecentTransactions(accountNumber, sevenDaysAgo)
+                .stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     private void publishEvent(String eventType, Transaction t) {
