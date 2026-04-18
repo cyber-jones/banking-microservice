@@ -4,12 +4,16 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -17,6 +21,8 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.security.Key;
+import java.util.Date;
+import java.util.List;
 
 /**
  * JwtAuthenticationFilter — a Gateway Filter that validates JWT on every request.
@@ -59,6 +65,12 @@ public class JwtAuthenticationFilter
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
 
+            // Checking for excluded paths
+            if (config.getExcludedPaths() != null &&
+                    config.getExcludedPaths().stream().anyMatch(path -> request.getURI().getPath().contains(path))) {
+                return chain.filter(exchange);
+            }
+
             // Check if Authorization header is present
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, "Missing Authorization header", HttpStatus.UNAUTHORIZED);
@@ -73,12 +85,21 @@ public class JwtAuthenticationFilter
 
             try {
                 Claims claims = validateToken(token);
+
+                // Validate the date of the token if it's expired or not
+                Date expiration = claims.getExpiration();
+                if (expiration.before(new Date())) {
+                    throw new RuntimeException("Token expired");
+                }
+
                 String username = claims.getSubject();
-                log.debug("Gateway validated JWT for user: {}", username);
+                String roles = claims.get("authorities", String.class);
+                log.debug("Gateway validated JWT for user: {} | path: {}", username, request.getURI());
 
                 // Forward the authenticated username as a header to downstream services
                 ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
                         .header("X-Auth-User", username)
+                        .header("X-Auth-Roles", roles)
                         .build();
 
                 return chain.filter(exchange.mutate().request(modifiedRequest).build());
@@ -110,15 +131,27 @@ public class JwtAuthenticationFilter
     private Mono<Void> onError(ServerWebExchange exchange, String message, HttpStatus status) {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(status);
+
         log.warn("Gateway rejected request: {}", message);
-        return response.setComplete();
+//        return response.setComplete();
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
+        String body = String.format("{\"error\": \"%s\"}", message);
+        DataBuffer buffer = response.bufferFactory().wrap(body.getBytes());
+
+        return response.writeWith(Mono.just(buffer));
+
     }
 
     /**
      * Config class — allows configuring the filter in application.yml.
      * Currently empty but can hold properties like excluded paths.
      */
+    @Setter
+    @Getter
     public static class Config {
         // Future: add excludedPaths, requireRoles, etc.
+        private List<String> excludedPaths;
+
     }
 }

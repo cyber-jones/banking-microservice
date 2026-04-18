@@ -37,7 +37,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     @Query("SELECT t FROM Transaction t " +
             "WHERE t.accountNumber = :acct " +
-            "AND t.created_at >= :fromDate ORDER BY t.created_at ASC")
+            "AND t.createdAt >= :fromDate ORDER BY t.createdAt DESC")
     List<Transaction> getRecentTransactions(@Param("acct") String accountNumber,
                                              @Param("fromDate") LocalDateTime fromDate);
 }
