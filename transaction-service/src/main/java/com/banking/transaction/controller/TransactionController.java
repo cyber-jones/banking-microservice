@@ -54,7 +54,7 @@ public class TransactionController {
     }
 
     @GetMapping("/account/{accountNumber}")
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get all transactions for an account")
     public ResponseEntity<List<TransactionDto.Response>> getTransactions(
             @PathVariable String accountNumber) {

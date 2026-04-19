@@ -38,6 +38,12 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
+        <!-- Redis for request rate limiting -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+        </dependency>
+
         <!-- JWT validation at the gateway -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

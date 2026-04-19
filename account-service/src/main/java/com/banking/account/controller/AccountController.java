@@ -147,7 +147,7 @@ public class AccountController {
      */
     @PatchMapping("/{id}/balance")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Update account details")
+    @Operation(summary = "Update account balance")
     public ResponseEntity<AccountDto.Response> updateAccountBalance(
             @PathVariable Long id,
             @Valid @RequestBody AccountDto.BalanceUpdateRequest request) {
@@ -160,10 +160,8 @@ public class AccountController {
      */
     @PatchMapping("/{id}/freeze")
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Update account details")
-    @ApiResponse(responseCode = "204", description = "Account frozen successfully")
+    @Operation(summary = "Freeze account")
     public ResponseEntity<AccountDto.Response> freezeAccount(@PathVariable Long id) {
-        accountService.freezeAccount(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(accountService.freezeAccount(id));
     }
 }

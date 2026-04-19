@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: api-gateway
+  redis:
+    host: redis
+    port: 6379
 
   cloud:
     gateway:
@@ -34,9 +37,27 @@ spring:
           predicates:
             - Path=/api/v1/accounts/**
           filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 2
+                redis-rate-limiter.burstCapacity: 4
+                key-resolver: "#{@ipKeyResolver}"
             - name: JwtAuthenticationFilter  # Validate JWT before forwarding
             - AddRequestHeader=X-Gateway-Source, banking-gateway
-            - AddResponseHeader=X-Response-Time, "#{T(java.time.Instant).now()}"
+            - AddResponseHeader=X-Response-Time, static-value #"#{T(java.time.Instant).now()}"
+#            - name: RequestRateLimiter
+#              args:
+#                redis-rate-limiter.replenishRate: 5 # 5 → 5 requests per second
+#                redis-rate-limiter.burstCapacity: 10 # 10 → allows short spikes up to 10
+#                key-resolver: "#{@userKeyResolver}"
+
+        - id: account-service-health
+          uri: lb://account-service;
+          predicates:
+            - Path=/api/v1/health/**
+          # No JWT filter on auth endpoints
+          filters:
+            - RewritePath=/api/v1/health/(?<segment>.*), /api/v1/health/$\{segment}
 
         # ─── Transaction Service Routes ───────────────────────────
         - id: transaction-service

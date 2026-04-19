@@ -38,6 +38,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().permitAll()  // Internal service — secured at gateway
                 )
+
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }

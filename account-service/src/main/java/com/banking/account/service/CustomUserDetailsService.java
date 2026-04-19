@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  *
  * TEACHING POINT — UserDetailsService:
  * Spring Security calls loadUserByUsername() whenever it needs to authenticate
- * or authorise a user. We load the User from our DB and wrap it in Spring's
+ * or authorize a user. We load the User from our DB and wrap it in Spring's
  * UserDetails interface (which provides username, password, authorities/roles).
  *
  * SimpleGrantedAuthority wraps role strings like "ROLE_USER", "ROLE_ADMIN".

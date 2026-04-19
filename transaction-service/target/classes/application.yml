@@ -57,6 +57,14 @@ feign:
         connect-timeout: 3000
         read-timeout: 3000
 
+# JWT settings
+# TEACHING POINT: In production, use environment variables or a secrets manager.
+# Never commit real secrets to source control!
+app:
+  jwt:
+    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970  # Base64 256-bit key
+    expiration: 86400000  # 24 hours in milliseconds
+
 springdoc:
   api-docs:
     path: /v3/api-docs

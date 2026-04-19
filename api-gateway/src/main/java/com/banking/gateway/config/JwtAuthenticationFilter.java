@@ -67,7 +67,8 @@ public class JwtAuthenticationFilter
 
             // Checking for excluded paths
             if (config.getExcludedPaths() != null &&
-                    config.getExcludedPaths().stream().anyMatch(path -> request.getURI().getPath().contains(path))) {
+                    config.getExcludedPaths().stream()
+                            .anyMatch(path -> request.getURI().getPath().contains(path))) {
                 return chain.filter(exchange);
             }
 
@@ -154,4 +155,30 @@ public class JwtAuthenticationFilter
         private List<String> excludedPaths;
 
     }
+
+
+
+//    "#{T(java.time.Instant).now()}"
+
+//
+//    @Component
+//    public class ResponseTimeFilter implements GlobalFilter, Ordered {
+//
+//        @Override
+//        public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+//            long startTime = System.currentTimeMillis();
+//
+//            return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+//                long duration = System.currentTimeMillis() - startTime;
+//                exchange.getResponse()
+//                        .getHeaders()
+//                        .add("X-Response-Time", duration + "ms");
+//            }));
+//        }
+//
+//        @Override
+//        public int getOrder() {
+//            return -1;
+//        }
+//    }
 }

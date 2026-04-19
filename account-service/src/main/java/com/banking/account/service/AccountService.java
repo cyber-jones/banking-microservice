@@ -175,12 +175,12 @@ public class AccountService {
      * freeze/deactivate an account.
      */
     @Transactional
-    public void freezeAccount(Long id) {
+    public AccountDto.Response freezeAccount(Long id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found with id: " + id));
 
         account.setStatus(Account.AccountStatus.FROZEN);
-        accountRepository.save(account);
+        Account frozenAccount = accountRepository.save(account);
 
         AccountEvent event = AccountEvent.builder()
                 .eventType("ACCOUNT_FROZEN")
@@ -190,6 +190,8 @@ public class AccountService {
                 .build();
         kafkaTemplate.send(ACCOUNT_TOPIC, account.getAccountNumber(), event);
         log.info("Account frozen: {}", account.getAccountNumber());
+
+        return mapToResponse(frozenAccount);
     }
 
     /**
