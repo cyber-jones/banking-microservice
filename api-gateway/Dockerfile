@@ -14,7 +14,7 @@ FROM eclipse-temurin:21-jdk AS runner
 
 WORKDIR /app
 
-COPY --from=builder ./app/target/api-gateway-service-0.0.1-SNAPSHOT.jar ./app.jar
+COPY --from=builder ./app/target/api-gateway-1.0.0.jar ./app.jar
 
 EXPOSE 8080
 

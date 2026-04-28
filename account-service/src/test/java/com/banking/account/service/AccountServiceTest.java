@@ -50,7 +50,7 @@ import static org.mockito.Mockito.*;
  *   assertThatThrownBy(() -> ...).isInstanceOf(RuntimeException.class)
  *
  * TEACHING POINT — @Nested:
- * Groups related tests together for better organisation and readability.
+ * Groups related tests together for better organization and readability.
  *
  * TEACHING POINT — @DisplayName:
  * Gives tests human-readable names in the test report.

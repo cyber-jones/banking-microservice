@@ -52,7 +52,7 @@ spring:
 #                key-resolver: "#{@userKeyResolver}"
 
         - id: account-service-health
-          uri: lb://account-service;
+          uri: lb://account-service
           predicates:
             - Path=/api/v1/health/**
           # No JWT filter on auth endpoints

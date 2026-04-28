@@ -45,7 +45,7 @@ spring:
 
   # Kafka configuration
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: banking-kafka:29092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -54,7 +54,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_SERVER_URL}
     fetch-registry: true
     register-with-eureka: true
   instance:

@@ -52,7 +52,7 @@ spring:
 #                key-resolver: "#{@userKeyResolver}"
 
         - id: account-service-health
-          uri: lb://account-service;
+          uri: lb://account-service
           predicates:
             - Path=/api/v1/health/**
           # No JWT filter on auth endpoints
@@ -101,7 +101,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_SERVER_URL}
     fetch-registry: true
     register-with-eureka: true
   instance:
@@ -110,7 +110,7 @@ eureka:
 # Same JWT secret as account-service for validation
 app:
   jwt:
-    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
 
 # Actuator for health checks
 management:

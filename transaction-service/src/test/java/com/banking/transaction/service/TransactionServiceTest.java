@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
  * Pattern for each test:
  *  1. ARRANGE — set up mocks and input data
  *  2. ACT     — call the method under test
- *  3. ASSERT  — verify the result and any side-effects
+ *  3. ASSERT  — verify the result and any side effects
  */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("TransactionService Unit Tests")
@@ -56,13 +56,12 @@ class TransactionServiceTest {
 
     @BeforeEach
     void setUp() {
-        activeAccount = AccountClientDto.AccountResponse.builder()
-                .id(1L)
-                .accountNumber("ACC0000000001")
-                .ownerName("John Doe")
-                .balance(new BigDecimal("5000.00"))
-                .status("ACTIVE")
-                .build();
+        activeAccount = new AccountClientDto.AccountResponse();
+        activeAccount.setId(1L);
+        activeAccount.setAccountNumber("ACC0000000001");
+        activeAccount.setOwnerName("John Doe");
+        activeAccount.setBalance(new BigDecimal("5000.00"));
+        activeAccount.setStatus("ACTIVE");
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -213,12 +212,11 @@ class TransactionServiceTest {
         @DisplayName("should complete transfer between two active accounts")
         void transfer_ValidAccounts_CompletesTransfer() {
             // ARRANGE
-            AccountClientDto.AccountResponse toAccount = AccountClientDto.AccountResponse.builder()
-                    .id(2L)
-                    .accountNumber("ACC0000000002")
-                    .balance(new BigDecimal("2000.00"))
-                    .status("ACTIVE")
-                    .build();
+            AccountClientDto.AccountResponse toAccount = new AccountClientDto.AccountResponse();
+            toAccount.setId(2L);
+            toAccount.setAccountNumber("ACC0000000002");
+            toAccount.setBalance(new BigDecimal("2000.00"));
+            toAccount.setStatus("ACTIVE");
 
             when(accountServiceClient.getAccountByNumber("ACC0000000001")).thenReturn(activeAccount);
             when(accountServiceClient.getAccountByNumber("ACC0000000002")).thenReturn(toAccount);

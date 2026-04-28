@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * GlobalExceptionHandler — centralised error handling for all controllers.
+ * GlobalExceptionHandler — centralized error handling for all controllers.
  *
  * TEACHING POINT — @RestControllerAdvice:
  * Instead of try/catch in every controller, we define exception handlers ONCE here.

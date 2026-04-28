@@ -12,44 +12,84 @@ version: '3.8'
 # View logs: docker-compose logs -f kafka
 
 services:
-#  account-service:
-#    image: cyber-jones/account-service:latest
-#    container_name: account-service
-#    depends_on:
-#      - eureka-server
+  eureka-server:
+    image: cyberjones/eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - banking-network
+
+  api-gateway:
+    image: cyberjones/api-gateway:latest
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+      - redis
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - JWT_SECRET=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    networks:
+      - banking-network
+
+  account-service:
+    image: cyberjones/account-service:latest
+    container_name: account-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - eureka-server
+      - kafka
+      - api-gateway
 #      - mysql-db
-#    environment:
-#      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:accountdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=password
+    networks:
+      - banking-network
+
+  transaction-service:
+    image: cyberjones/transaction-service:latest
+    container_name: transaction-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eureka-server
+      - kafka
+      - api-gateway
+#      - mysql-db
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:transactiondb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=password
+    networks:
+      - banking-network
+
+  notification-service:
+    image: cyberjones/notification-service:latest
+    container_name: notification-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - eureka-server
+      - kafka
+      - api-gateway
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
 #      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/account_db
-#      - SPRING_DATASOURCE_USERNAME=root
-#      - SPRING_DATASOURCE_PASSWORD=root
-#    networks:
-#      - banking-network
-#
-#  transaction-service:
-#    image: cyber-jones/transaction-service:latest
-#    container_name: transaction-service
-#    depends_on:
-#      - eureka-server
-#      - mysql-db
-#    environment:
-#      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
-#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/transaction_db
-#      - SPRING_DATASOURCE_USERNAME=root
-#      - SPRING_DATASOURCE_PASSWORD=root
-#    networks:
-#      - banking-network
-#
-#  notification-service:
-#    image: cyber-jones/notification-service:latest
-#    container_name: notification-service
-#    depends_on:
-#      - eureka-server
-#    environment:
-#      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
-#    networks:
-#      - banking-network
-#
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:notificationdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=password
+    networks:
+      - banking-network
+
 #  mysql-db:
 #    image: mysql:8.0
 #    container_name: mysql-db
